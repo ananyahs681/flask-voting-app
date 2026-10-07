@@ -71,3 +71,20 @@ Each version was released by pushing `dev`, then checking out `main`, merging `d
 **Commit/merge history showing Version 1 and Version 2 releases:**
 
 ![Commit history](screenshots/03-commit-history.png)
+
+## Docker Setup
+
+The Flask Voting App can be containerized and run using Docker.
+
+### Prerequisites
+
+- Docker Desktop installed and running
+- Git
+- Python (for local development)
+
+### Build the Docker Image
+
+From the project root:
+
+```bash
+docker build -t flask-voting-app:1.0 .
