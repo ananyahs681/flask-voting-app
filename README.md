@@ -88,3 +88,134 @@ From the project root:
 
 ```bash
 docker build -t flask-voting-app:1.0 .
+```
+
+### Run the Docker Container
+
+Run the container and map port `5000` on the host to port `5000` inside the container:
+
+```bash
+docker run -d --name flask-voting-app -p 5000:5000 flask-voting-app:1.0
+```
+
+### Verify the Container
+
+Check that the container is running:
+
+```bash
+docker ps
+```
+
+Expected port mapping:
+
+```text
+0.0.0.0:5000->5000/tcp
+```
+
+The application can then be accessed at:
+
+```text
+http://localhost:5000
+```
+
+### Test the Application
+
+Health check:
+
+```text
+http://localhost:5000/health
+```
+
+Vote for a candidate:
+
+```text
+http://localhost:5000/vote/alice
+```
+
+View results:
+
+```text
+http://localhost:5000/results
+```
+
+Reset all votes:
+
+```text
+http://localhost:5000/reset
+```
+
+### View Container Logs
+
+To view the application logs:
+
+```bash
+docker logs flask-voting-app
+```
+
+To follow logs continuously:
+
+```bash
+docker logs -f flask-voting-app
+```
+
+### Stop and Start the Container
+
+Stop the running container:
+
+```bash
+docker stop flask-voting-app
+```
+
+Start it again:
+
+```bash
+docker start flask-voting-app
+```
+
+### Docker Architecture
+
+```text
+Host Machine
+     |
+     | Port 5000
+     v
+Docker Container
+     |
+     | Port 5000
+     v
+Flask Application
+     |
+     +-- /
+     +-- /health
+     +-- /vote/<name>
+     +-- /results
+     +-- /reset
+```
+
+### Current Application Limitation
+
+Votes are currently stored in application memory. This means the vote data is lost when the application restarts, and multiple application instances would maintain separate vote states.
+
+For a production deployment with multiple instances or containers, the vote state should be stored in an external persistent data store such as a database or managed storage service.
+
+## DevOps Deployment Progress
+
+The project is being progressively extended from a simple Flask application into a cloud/DevOps deployment project.
+
+Current progress:
+
+- Flask application created and tested locally
+- Git branching and versioning implemented
+- Docker containerization completed
+- Docker image successfully built and tested
+- Application logs verified using Docker
+- Dedicated `devops-aws-deployment` branch created
+
+Upcoming work includes:
+
+- Terraform infrastructure as code
+- AWS infrastructure deployment
+- Container registry integration
+- Kubernetes/EKS deployment
+- CI/CD pipeline
+- Monitoring and production-oriented configuration
