@@ -1,3 +1,19 @@
 venv/
 __pycache__/
 *.pyc
+
+# Terraform working directory
+**/.terraform/*
+
+# Terraform state and backups
+*.tfstate
+*.tfstate.*
+
+# Terraform plans and crash logs
+*.tfplan
+crash.log
+crash.*.log
+
+# Local variables may contain sensitive values
+*.tfvars
+*.tfvars.json

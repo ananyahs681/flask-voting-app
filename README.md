@@ -219,3 +219,59 @@ Upcoming work includes:
 - Kubernetes/EKS deployment
 - CI/CD pipeline
 - Monitoring and production-oriented configuration
+
+
+## Terraform Infrastructure — Hands-on Practice
+
+### Objective
+
+Use Terraform to provision and manage AWS infrastructure as code for the Flask Voting App project.
+
+### Environment
+
+- AWS CLI: 2.35.21
+- Terraform: 1.15.8
+- AWS region: `ap-southeast-2` (Sydney)
+- AWS CLI profile: `flask-voting-app`
+- Terraform provider: AWS
+
+### Terraform workflow practised
+
+1. `terraform init` — initialized the working directory and installed the AWS provider.
+2. `terraform fmt` — formatted Terraform configuration files.
+3. `terraform validate` — validated the configuration.
+4. `terraform plan` — previewed proposed infrastructure changes.
+5. `terraform apply` — created the configured AWS resources.
+6. `terraform state list` — listed resources tracked in Terraform state.
+7. `terraform output` — displayed the bucket name output.
+
+### Infrastructure provisioned
+
+Terraform successfully created four AWS resources:
+
+- S3 bucket for the project.
+- S3 public access block.
+- Default server-side encryption using AES256 (SSE-S3).
+- S3 bucket versioning.
+
+The bucket is configured to block public access, encrypt new objects by default, and retain previous object versions when objects are overwritten or deleted.
+
+### Terraform concepts learned
+
+- **Provider:** Connects Terraform to AWS.
+- **Resource:** Declares infrastructure to create or manage.
+- **Output:** Exposes useful values from managed infrastructure.
+- **State:** Maps Terraform configuration to the infrastructure Terraform manages.
+- **Plan:** Previews proposed changes before execution.
+- **Apply:** Executes approved infrastructure changes.
+- **Drift:** A difference between the actual infrastructure and the configuration/state Terraform expects.
+
+### Current limitations and next steps
+
+- Add input variables to make configuration reusable.
+- Review state security and remote backend options.
+- Practise drift detection, modules and resource cleanup.
+- Continue building the AWS architecture required for the project, including IAM, networking, compute, container registry, monitoring and deployment components.
+- Learn Kubernetes and EKS deployment and troubleshooting.
+
+**Project status:** The S3 resources above have been provisioned successfully. Other infrastructure and deployment components remain future work until implemented and verified.
