@@ -275,3 +275,72 @@ The bucket is configured to block public access, encrypt new objects by default,
 - Learn Kubernetes and EKS deployment and troubleshooting.
 
 **Project status:** The S3 resources above have been provisioned successfully. Other infrastructure and deployment components remain future work until implemented and verified.
+
+## Kubernetes deployment (local Kind cluster)
+
+### Architecture
+
+The Flask voting application was deployed to a local Kubernetes cluster
+created with Kind (Kubernetes in Docker).
+
+- **Docker image:** `flask-voting-app:1.0`
+- **Cluster:** `flask-voting`
+- **Deployment:** `flask-voting`
+- **Replicas:** 2
+- **Health checks:** Readiness and liveness probes using `/health`
+- **Service:** `flask-voting-service` (NodePort)
+- **Service port:** 5000
+- **NodePort:** 30080
+
+### Deployment workflow
+
+1. Create a local Kind cluster.
+2. Build the Docker image.
+3. Load the local image into the Kind cluster.
+4. Apply the Kubernetes Deployment and Service manifests.
+5. Verify pod health and test the application endpoint.
+
+### Useful commands
+
+```bash
+# Create a local cluster
+kind create cluster --name flask-voting
+
+# Load the application image
+kind load docker-image flask-voting-app:1.0 --name flask-voting
+
+# Deploy the application
+kubectl apply -f k8s/deployment.yaml
+kubectl apply -f k8s/service.yaml
+
+# Verify deployment, pods and service
+kubectl get deployments
+kubectl get pods
+kubectl get services
+
+# Access the application locally
+kubectl port-forward service/flask-voting-service 8080:5000
+
+# Test in another terminal
+curl http://localhost:8080/health
+```
+
+### Kubernetes concepts practised
+
+- **Pod:** Runs the application container.
+- **Deployment:** Maintains the desired number of replicas.
+- **Service:** Provides a stable endpoint for accessing matching pods.
+- **Readiness probe:** Checks whether a pod is ready to receive traffic.
+- **Liveness probe:** Checks whether a container is healthy.
+- **Kind:** Runs a local Kubernetes cluster using Docker.
+- **kubectl:** Interacts with and manages Kubernetes resources.
+
+### Limitations and next steps
+
+The application stores vote counts in memory. With multiple replicas,
+each pod can maintain different vote counts. A production design should
+use shared persistent storage, such as a database.
+
+The current Kubernetes deployment is local. Deployment to Amazon EKS,
+publishing the image to Amazon ECR, and automating the workflow with
+CI/CD remain future work until implemented and verified.
