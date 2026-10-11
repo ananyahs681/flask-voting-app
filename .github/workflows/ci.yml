@@ -1,0 +1,54 @@
+name: Flask App CI
+
+on:
+  push:
+    branches:
+      - devops-aws-deployment
+  pull_request:
+    branches:
+      - devops-aws-deployment
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Check Python syntax
+        run: python -m compileall -q app.py
+
+      - name: Build Docker image
+        run: docker build -t flask-voting-app:${{ github.sha }} .
+
+      - name: Run container
+        run: docker run -d --name flask-voting-ci -p 5001:5000 flask-voting-app:${{ github.sha }}
+
+      - name: Test application health
+        run: |
+          for attempt in $(seq 1 20); do
+            if curl --fail --silent http://localhost:5001/health\; then
+              echo
+              echo "Health check passed!"
+              exit 0
+            fi
+            sleep 1
+          done
+
+          docker logs flask-voting-ci
+          exit 1
+
+      - name: Clean up container
+        if: always()
+        run: docker rm -f flask-voting-ci || true
