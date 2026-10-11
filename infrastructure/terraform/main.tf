@@ -58,6 +58,34 @@ resource "aws_s3_bucket_versioning" "app_bucket" {
 }
 
 
+
+# Private container registry for the Flask voting app
+resource "aws_ecr_repository" "app" {
+  name                 = "flask-voting-app"
+  image_tag_mutability = "MUTABLE"
+  force_delete         = false
+
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+
+  encryption_configuration {
+    encryption_type = "AES256"
+  }
+
+  tags = {
+    Name        = "Flask Voting App ECR"
+    Environment = var.environment
+    ManagedBy   = "Terraform"
+  }
+}
+
+output "ecr_repository_url" {
+  description = "URL of the private ECR repository"
+  value       = aws_ecr_repository.app.repository_url
+}
+
+
 output "bucket_name" {
   description = "Name of the S3 bucket created for the project"
   value       = aws_s3_bucket.app_bucket.bucket
